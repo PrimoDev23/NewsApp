@@ -30,7 +30,7 @@ class TopHeadlineViewModel : ViewModel() {
     }
 
     fun fetchNews(){
-        service.getTopHeadlines("16f644c1c2db4d979b223bebec1c1be1", "de").enqueue(object :
+        service.getTopHeadlines("16f644c1c2db4d979b223bebec1c1be1", "de", 100).enqueue(object :
             Callback<NewsResponse> {
             override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
                 println("Failed retrieving latest news with message ${t.message}")
@@ -52,7 +52,7 @@ class TopHeadlineViewModel : ViewModel() {
     }
 
     fun fetchNews(searchString : String){
-        service.getTopHeadlines("16f644c1c2db4d979b223bebec1c1be1", "de", searchString).enqueue(object :
+        service.getTopHeadlines("16f644c1c2db4d979b223bebec1c1be1", "de", searchString, 100).enqueue(object :
             Callback<NewsResponse> {
             override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
                 println("Failed retrieving latest news with message ${t.message}")
