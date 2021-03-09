@@ -23,6 +23,7 @@ internal class NewsAdapter(var context : Context, var list : List<Article>) : Re
         val manager = Glide.with(view)
         val title : TextView = view.findViewById(R.id.txt_title)
         val shortDesc : TextView = view.findViewById(R.id.txt_shortDesc)
+        val time : TextView = view.findViewById(R.id.txt_time)
         val layout : ConstraintLayout = view.findViewById(R.id.layout)
     }
 
@@ -40,17 +41,18 @@ internal class NewsAdapter(var context : Context, var list : List<Article>) : Re
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
         val article = list[position]
 
+        //Set texts accordingly
         holder.title.text = article.title
         holder.shortDesc.text = article.description
+        holder.time.text = article.publishedAt.replace('T', ' ').replace("Z", "")
+
+        //Load the image from the web
+        holder.manager.load(article.urlToImage).into(holder.img)
 
         holder.layout.setOnClickListener {
             val openURL = Intent(Intent.ACTION_VIEW)
             openURL.data = Uri.parse(article.url)
             startActivity( context, openURL, Bundle.EMPTY)
-        }
-
-        if(article.urlToImage != null){
-            holder.manager.load(article.urlToImage).into(holder.img)
         }
     }
 }
