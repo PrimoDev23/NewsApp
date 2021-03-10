@@ -30,6 +30,7 @@ class TopHeadlineViewModel : ViewModel() {
     }
 
     fun fetchNews(){
+        _Refreshing.value = true
         service.getTopHeadlines("16f644c1c2db4d979b223bebec1c1be1", "de", 100).enqueue(object :
             Callback<NewsResponse> {
             override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
@@ -52,6 +53,7 @@ class TopHeadlineViewModel : ViewModel() {
     }
 
     fun fetchNews(searchString : String){
+        _Refreshing.value = true
         service.getTopHeadlines("16f644c1c2db4d979b223bebec1c1be1", "de", searchString, 100).enqueue(object :
             Callback<NewsResponse> {
             override fun onFailure(call: Call<NewsResponse>, t: Throwable) {

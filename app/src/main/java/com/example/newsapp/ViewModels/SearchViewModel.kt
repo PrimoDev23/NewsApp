@@ -16,6 +16,10 @@ class SearchViewModel : ViewModel() {
     val NewsList
         get() = _NewsList
 
+    private val _Refreshing = MutableLiveData(false)
+    val Refreshing
+        get() = _Refreshing
+
     private val baseURL : String = "https://newsapi.org/v2/"
 
     private val service by lazy {
@@ -24,9 +28,11 @@ class SearchViewModel : ViewModel() {
     }
 
     fun fetchNews(searchString : String){
+        _Refreshing.value = true
         service.getNewsBySearch("16f644c1c2db4d979b223bebec1c1be1", searchString, "de", 100).enqueue(object : Callback<NewsResponse>{
             override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
                 println("Failed retrieving latest news with message ${t.message}")
+                _Refreshing.value = false
             }
 
             override fun onResponse(call: Call<NewsResponse>, response: Response<NewsResponse>) {
@@ -37,6 +43,7 @@ class SearchViewModel : ViewModel() {
                 }else{
                     println("Failed to retrieve latest news with message ${response.message()}")
                 }
+                _Refreshing.value = false
             }
 
         })
