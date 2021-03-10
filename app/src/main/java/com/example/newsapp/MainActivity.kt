@@ -2,7 +2,7 @@ package com.example.newsapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.newsapp.Models.ViewPagerAdapter
+import com.example.newsapp.adapter.ViewPagerAdapter
 import com.example.newsapp.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayout
 

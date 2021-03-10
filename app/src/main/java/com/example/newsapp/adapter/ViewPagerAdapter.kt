@@ -1,4 +1,4 @@
-package com.example.newsapp.Models
+package com.example.newsapp.adapter
 
 import android.content.Context
 import androidx.fragment.app.Fragment

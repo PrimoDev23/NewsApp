@@ -10,7 +10,7 @@ import android.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.newsapp.Models.NewsAdapter
+import com.example.newsapp.adapter.NewsAdapter
 import com.example.newsapp.ViewModels.SearchViewModel
 import com.example.newsapp.databinding.SearchFragmentBinding
 

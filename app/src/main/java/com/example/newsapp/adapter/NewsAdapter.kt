@@ -1,4 +1,4 @@
-package com.example.newsapp.Models
+package com.example.newsapp.adapter
 
 import android.content.Context
 import android.content.Intent
@@ -14,6 +14,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.newsapp.Models.Article
 import com.example.newsapp.R
 
 internal class NewsAdapter(var context : Context, var list : List<Article>) : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>(){
