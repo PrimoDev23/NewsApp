@@ -9,9 +9,9 @@ import retrofit2.http.Query
 
 interface NewsApi{
     @GET("top-headlines")
-    fun getTopHeadlines(@Header("X-Api-Key") apiKey : String, @Query("country") countryCode : String, @Query("pageSize") pageSize : Int) : Call<NewsResponse>
+    fun getTopHeadlines(@Header("X-Api-Key") apiKey : String, @Query("country") countryCode : String, @Query("category") category : String, @Query("pageSize") pageSize : Int) : Call<NewsResponse>
     @GET("top-headlines")
-    fun getTopHeadlines(@Header("X-Api-Key") apiKey : String, @Query("country") countryCode : String, @Query("q") searchString : String, @Query("pageSize") pageSize : Int) : Call<NewsResponse>
+    fun getTopHeadlines(@Header("X-Api-Key") apiKey : String, @Query("country") countryCode : String, @Query("q") searchString : String,  @Query("category") category : String, @Query("pageSize") pageSize : Int) : Call<NewsResponse>
 
     @GET("everything")
     fun getNewsBySearch(@Header("X-Api-Key") apiKey : String, @Query("q") searchString : String, @Query("language") language : String, @Query("pageSize") pageSize : Int) : Call<NewsResponse>

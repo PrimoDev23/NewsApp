@@ -20,6 +20,8 @@ class SearchViewModel : ViewModel() {
     val Refreshing
         get() = _Refreshing
 
+    var latest_search = ""
+
     private val baseURL : String = "https://newsapi.org/v2/"
 
     private val service by lazy {

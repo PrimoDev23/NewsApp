@@ -4,9 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.newsapp.Models.NewsResponse
+import com.example.newsapp.Models.Category
 import com.example.newsapp.Services.NewsApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,6 +21,12 @@ class TopHeadlineViewModel : ViewModel() {
     val Refreshing : LiveData<Boolean>
         get() = _Refreshing
 
+    private val _Cat = MutableLiveData<Category>(Category.general)
+    val Cat
+        get() = _Cat
+
+    var latest_search : String? = null
+
     private val baseURL : String = "https://newsapi.org/v2/"
 
     private val service by lazy {
@@ -29,9 +34,13 @@ class TopHeadlineViewModel : ViewModel() {
             NewsApi::class.java)
     }
 
+    fun setCategory(category : Category){
+        _Cat.value = category
+    }
+
     fun fetchNews(){
         _Refreshing.value = true
-        service.getTopHeadlines("16f644c1c2db4d979b223bebec1c1be1", "de", 100).enqueue(object :
+        service.getTopHeadlines("16f644c1c2db4d979b223bebec1c1be1", "de", Cat.value.toString(), 100).enqueue(object :
             Callback<NewsResponse> {
             override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
                 println("Failed retrieving latest news with message ${t.message}")
@@ -54,7 +63,7 @@ class TopHeadlineViewModel : ViewModel() {
 
     fun fetchNews(searchString : String){
         _Refreshing.value = true
-        service.getTopHeadlines("16f644c1c2db4d979b223bebec1c1be1", "de", searchString, 100).enqueue(object :
+        service.getTopHeadlines("16f644c1c2db4d979b223bebec1c1be1", "de", searchString, Cat.value.toString(), 100).enqueue(object :
             Callback<NewsResponse> {
             override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
                 println("Failed retrieving latest news with message ${t.message}")

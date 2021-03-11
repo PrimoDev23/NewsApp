@@ -24,8 +24,6 @@ class SearchFragment : Fragment() {
     private lateinit var binding : SearchFragmentBinding
     private lateinit var newsAdapter : NewsAdapter
 
-    private var latest_search : String = ""
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -47,7 +45,7 @@ class SearchFragment : Fragment() {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 if(!p0.isNullOrEmpty()){
                     viewModel.fetchNews(p0)
-                    latest_search = p0
+                    viewModel.latest_search = p0
                 }
                 return false
             }
@@ -68,7 +66,7 @@ class SearchFragment : Fragment() {
         })
 
         binding.searchRefreshView.setOnRefreshListener {
-            viewModel.fetchNews(latest_search)
+            viewModel.fetchNews(viewModel.latest_search)
         }
 
         return binding.root

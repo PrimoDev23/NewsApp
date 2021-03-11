@@ -10,6 +10,9 @@ import android.widget.SearchView.OnQueryTextListener
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.transition.AutoTransition
+import androidx.transition.TransitionManager
+import com.example.newsapp.Models.Category
 import com.example.newsapp.adapter.NewsAdapter
 import com.example.newsapp.ViewModels.TopHeadlineViewModel
 import com.example.newsapp.databinding.TopHeadlineFragmentBinding
@@ -42,11 +45,41 @@ class TopHeadlineFragment : Fragment() {
             setItemViewCacheSize(20)
         }
 
+        setupObservers()
+
+        setupListeners()
+
+        viewModel.fetchNews()
+
+        return binding.root
+    }
+
+    private fun setupObservers(){
+        viewModel.NewsList.observe(viewLifecycleOwner, Observer {
+            newsAdapter.list = it.articles
+            newsAdapter.notifyDataSetChanged()
+        })
+
+        viewModel.Refreshing.observe(viewLifecycleOwner, Observer {
+            binding.refreshView.isRefreshing = it
+        })
+
+        viewModel.Cat.observe(viewLifecycleOwner, Observer {
+            if(viewModel.latest_search.isNullOrEmpty()){
+                viewModel.fetchNews()
+            }else{
+                viewModel.fetchNews(viewModel.latest_search!!)
+            }
+        })
+    }
+
+    private fun setupListeners(){
         binding.searchView.setOnQueryTextListener(object : OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 if(!p0.isNullOrEmpty()){
                     viewModel.fetchNews(p0)
                 }
+                viewModel.latest_search = p0
                 return false
             }
 
@@ -62,21 +95,37 @@ class TopHeadlineFragment : Fragment() {
         }
 
         binding.refreshView.setOnRefreshListener {
-            viewModel.fetchNews()
+            if(viewModel.latest_search.isNullOrEmpty()){
+                viewModel.fetchNews()
+            }else{
+                viewModel.fetchNews(viewModel.latest_search!!)
+            }
         }
 
-        viewModel.NewsList.observe(viewLifecycleOwner, Observer {
-            newsAdapter.list = it.articles
-            newsAdapter.notifyDataSetChanged()
-        })
+        binding.sortButton.setOnClickListener {
+            if(binding.expandleSortView.visibility == View.GONE){
+                TransitionManager.beginDelayedTransition(binding.topLayout, AutoTransition())
+                binding.expandleSortView.visibility = View.VISIBLE
+            }else{
+                TransitionManager.beginDelayedTransition(binding.topLayout, AutoTransition())
+                binding.expandleSortView.visibility = View.GONE
+            }
+        }
 
-        viewModel.Refreshing.observe(viewLifecycleOwner, Observer {
-            binding.refreshView.isRefreshing = it
-        })
-
-        viewModel.fetchNews()
-
-        return binding.root
+        setRadioButtonListener()
     }
 
+    private fun setRadioButtonListener(){
+        binding.radioCatGeneral.setOnCheckedChangeListener { compoundButton, b ->
+            if(b){
+                viewModel.setCategory(Category.general)
+            }
+        }
+
+        binding.radioCatScience.setOnCheckedChangeListener { compoundButton, b ->
+            if(b) {
+                viewModel.setCategory(Category.science)
+            }
+        }
+    }
 }
