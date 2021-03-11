@@ -119,12 +119,49 @@ class TopHeadlineFragment : Fragment() {
         binding.radioCatGeneral.setOnCheckedChangeListener { compoundButton, b ->
             if(b){
                 viewModel.setCategory(Category.general)
+                binding.rg2.clearCheck()
+            }
+        }
+
+        binding.radioCatBusiness.setOnCheckedChangeListener { compoundButton, b ->
+            if(b) {
+                viewModel.setCategory(Category.business)
+                binding.rg1.clearCheck()
+            }
+        }
+
+        binding.radioCatEntertainment.setOnCheckedChangeListener { compoundButton, b ->
+            if(b) {
+                viewModel.setCategory(Category.entertainment)
+                binding.rg2.clearCheck()
+            }
+        }
+
+        binding.radioCatHealth.setOnCheckedChangeListener { compoundButton, b ->
+            if(b) {
+                viewModel.setCategory(Category.health)
+                binding.rg1.clearCheck()
             }
         }
 
         binding.radioCatScience.setOnCheckedChangeListener { compoundButton, b ->
             if(b) {
                 viewModel.setCategory(Category.science)
+                binding.rg2.clearCheck()
+            }
+        }
+
+        binding.radioCatSports.setOnCheckedChangeListener { compoundButton, b ->
+            if(b) {
+                viewModel.setCategory(Category.sports)
+                binding.rg1.clearCheck()
+            }
+        }
+
+        binding.radioCatTechnology.setOnCheckedChangeListener { compoundButton, b ->
+            if(b) {
+                viewModel.setCategory(Category.technology)
+                binding.rg2.clearCheck()
             }
         }
     }
