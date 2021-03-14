@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.SearchView.OnQueryTextListener
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -24,12 +26,12 @@ class TopHeadlineFragment : Fragment() {
     }
 
     private lateinit var viewModel: TopHeadlineViewModel
-    private lateinit var binding : TopHeadlineFragmentBinding
-    private lateinit var newsAdapter : NewsAdapter
+    private lateinit var binding: TopHeadlineFragmentBinding
+    private lateinit var newsAdapter: NewsAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         binding = TopHeadlineFragmentBinding.inflate(inflater, container, false)
 
@@ -45,6 +47,9 @@ class TopHeadlineFragment : Fragment() {
             setItemViewCacheSize(20)
         }
 
+        val adapter = ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, listOf<String>("Allgemein", "Business", "Entertainment", "Gesundheit", "Wissenschaft", "Sport", "Technik"))
+        binding.spinnerCategory.adapter = adapter
+
         setupObservers()
 
         setupListeners()
@@ -54,7 +59,7 @@ class TopHeadlineFragment : Fragment() {
         return binding.root
     }
 
-    private fun setupObservers(){
+    private fun setupObservers() {
         viewModel.NewsList.observe(viewLifecycleOwner, Observer {
             newsAdapter.list = it.articles
             newsAdapter.notifyDataSetChanged()
@@ -65,18 +70,18 @@ class TopHeadlineFragment : Fragment() {
         })
 
         viewModel.Cat.observe(viewLifecycleOwner, Observer {
-            if(viewModel.latest_search.isNullOrEmpty()){
+            if (viewModel.latest_search.isNullOrEmpty()) {
                 viewModel.fetchNews()
-            }else{
+            } else {
                 viewModel.fetchNews(viewModel.latest_search!!)
             }
         })
     }
 
-    private fun setupListeners(){
+    private fun setupListeners() {
         binding.searchView.setOnQueryTextListener(object : OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
-                if(!p0.isNullOrEmpty()){
+                if (!p0.isNullOrEmpty()) {
                     viewModel.fetchNews(p0)
                 }
                 viewModel.latest_search = p0
@@ -95,74 +100,49 @@ class TopHeadlineFragment : Fragment() {
         }
 
         binding.refreshView.setOnRefreshListener {
-            if(viewModel.latest_search.isNullOrEmpty()){
+            if (viewModel.latest_search.isNullOrEmpty()) {
+                viewModel.fetchNews()
+            } else {
+                viewModel.fetchNews(viewModel.latest_search!!)
+            }
+        }
+
+        binding.sortButton.setOnClickListener {
+            if (binding.expandleSortView.visibility == View.GONE) {
+                TransitionManager.beginDelayedTransition(binding.topLayout, AutoTransition())
+                binding.expandleSortView.visibility = View.VISIBLE
+            } else {
+                TransitionManager.beginDelayedTransition(binding.topLayout, AutoTransition())
+                binding.expandleSortView.visibility = View.GONE
+            }
+        }
+
+        binding.spinnerCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                if (viewModel.latest_search.isNullOrEmpty()) {
+                    viewModel.fetchNews()
+                }else{
+                    viewModel.fetchNews(viewModel.latest_search!!)
+                }
+        }
+
+        override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+            when(p2){
+                0 -> viewModel.setCategory(Category.general)
+                1 -> viewModel.setCategory(Category.business)
+                2 -> viewModel.setCategory(Category.entertainment)
+                3 -> viewModel.setCategory(Category.health)
+                4 -> viewModel.setCategory(Category.science)
+                5 -> viewModel.setCategory(Category.sports)
+                6 -> viewModel.setCategory(Category.technology)
+            }
+            if (viewModel.latest_search.isNullOrEmpty()) {
                 viewModel.fetchNews()
             }else{
                 viewModel.fetchNews(viewModel.latest_search!!)
             }
         }
 
-        binding.sortButton.setOnClickListener {
-            if(binding.expandleSortView.visibility == View.GONE){
-                TransitionManager.beginDelayedTransition(binding.topLayout, AutoTransition())
-                binding.expandleSortView.visibility = View.VISIBLE
-            }else{
-                TransitionManager.beginDelayedTransition(binding.topLayout, AutoTransition())
-                binding.expandleSortView.visibility = View.GONE
-            }
-        }
-
-        setRadioButtonListener()
     }
-
-    private fun setRadioButtonListener(){
-        binding.radioCatGeneral.setOnCheckedChangeListener { compoundButton, b ->
-            if(b){
-                viewModel.setCategory(Category.general)
-                binding.rg2.clearCheck()
-            }
-        }
-
-        binding.radioCatBusiness.setOnCheckedChangeListener { compoundButton, b ->
-            if(b) {
-                viewModel.setCategory(Category.business)
-                binding.rg1.clearCheck()
-            }
-        }
-
-        binding.radioCatEntertainment.setOnCheckedChangeListener { compoundButton, b ->
-            if(b) {
-                viewModel.setCategory(Category.entertainment)
-                binding.rg2.clearCheck()
-            }
-        }
-
-        binding.radioCatHealth.setOnCheckedChangeListener { compoundButton, b ->
-            if(b) {
-                viewModel.setCategory(Category.health)
-                binding.rg1.clearCheck()
-            }
-        }
-
-        binding.radioCatScience.setOnCheckedChangeListener { compoundButton, b ->
-            if(b) {
-                viewModel.setCategory(Category.science)
-                binding.rg2.clearCheck()
-            }
-        }
-
-        binding.radioCatSports.setOnCheckedChangeListener { compoundButton, b ->
-            if(b) {
-                viewModel.setCategory(Category.sports)
-                binding.rg1.clearCheck()
-            }
-        }
-
-        binding.radioCatTechnology.setOnCheckedChangeListener { compoundButton, b ->
-            if(b) {
-                viewModel.setCategory(Category.technology)
-                binding.rg2.clearCheck()
-            }
-        }
-    }
+}
 }
